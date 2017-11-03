@@ -8,9 +8,12 @@
 
 /*=============================================================
  String
-=============================================================*/
-// .format([Object|Array])
-// 
+===============================================================
+ passing strings from an array to a string declared by curly brackets 
+
+ usage: String.format([Object|Array])
+ example: "My name is {} and I like {}".format(["Bad Rick","JS"])*/
+
 String.prototype.format = function (what) {
     var current_string = this.valueOf(), c = -1;
     
@@ -31,14 +34,40 @@ String.prototype.format = function (what) {
             return current_string;
         } 
     } else {
-        throw Error("[ERROR] TypeError");
+        throw Error("TypeError, " + what.constructor.name + " not supported");
     }
 };
 
 /*=============================================================
+ Number
+===============================================================
+ formats a number by grouping bigger numbers (using a specified seperator)
+
+ usage: Number.format([Number])
+ example: 1234567.890.format(".")*/ 
+
+Number.prototype.format = function(seperator) {
+    var number_as_text = String(this.valueOf());
+    var number_parts = number_as_text.split('.');
+    var number_absolute = number_parts[0].split('').reverse().join('').replace(/(\d\d\d)(?=\d)(?!\d*,)/g,"$1"+seperator).split('').reverse().join('');
+    var number_rest = number_parts[1];
+    var comma_sign = seperator == ',' ? '.' : ',' ;
+    
+    if (number_rest) {
+        return number_absolute + comma_sign +  number_rest;
+    } else {
+        return number_absolute;
+    }
+}
+
+/*=============================================================
   Date 
-=============================================================*/
-// .strftime([String])
+===============================================================
+ adding the strftime format to the Date Class
+
+ usage: Date.strftime([String])
+ example: new Date().strftime("%Y.%m.%d") */
+
 Date.prototype.strftime =  function(formatstring) {
     var date = this
     var wd_name = { "Mon":"Monday", "Tue":"Tuesday", "Wed":"Wednesday", 
@@ -70,7 +99,7 @@ Date.prototype.strftime =  function(formatstring) {
         "b" : date.toString().substr(4,3),
         "B" : m_name[date.toString().substr(4,3)],
         "c" : date.toString(),
-        "d" : date.getDate(),
+        "d" : String(date.getDate()).replace(/^(\d{1})$/,"0$1"),
         "H" : String(date.getHours()).replace(/^(\d{1})$/,"0$1"),
         "I" : date.getHours() <= 12 ? String(date.getHours()).replace(/^(\d{1})$/,"0$1") : String(date.getHours() - 12).replace(/^(\d{1})$/,"0$1"),
         "j" : day_of_the_year(),
@@ -93,23 +122,32 @@ Date.prototype.strftime =  function(formatstring) {
 
 /*=============================================================
   Random 
-=============================================================*/
+===============================================================
+ a Random class with some usefull functions:
+    randomint - creates a random integer in the range of two integers
+    sample - picks up a random unique set of elements out of an array
+    shuffle - shuffles elements in an array
+ 
+ usage: Random.randomint([Int],[Int])
+              .sample([Array],[Int])
+              .shuffle([Array])
+ example: new Random().randomint(1,10);
+          new Random().sample([1,2,3,4,5,6,7,8],5);
+          new Random().shuffle([1,2,3,4,5,6,7,8]);*/
+
 function Random() {
-    // .randomint([Int],[Int])
     this.randomint = function(min,max) { 
         if (max == undefined)  { max = 0}
         return Math.floor(Math.random() * (max - min + 1)) + min; 
-    }
-    // .sample([Array],[Int])
+        }
     this.sample = shuffle_sample
-    // .shuffle([Array])
     this.shuffle = shuffle_sample
 
     function shuffle_sample(list,samples) {
         var new_list = new Array()
         var c = 0
         var list_l = list.length  
-        if (samples > (list_l - 1) && samples != undefined) { throw Error("ValueError: Samples > List Length")}
+        if (samples > (list_l - 1) && samples != undefined) { throw Error("ValueError, samples > array length")}
         if (samples == undefined) { samples = list_l }
         while (c < samples) {
             var r = this.randomint(0,list.length-1)
@@ -119,11 +157,7 @@ function Random() {
         }
         return new_list
     }
-
 }
-
-
-
 
 
 
