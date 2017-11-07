@@ -61,6 +61,31 @@ Number.prototype.format = function(seperator) {
 }
 
 /*=============================================================
+ Location
+===============================================================
+ parses the arguments from an URL and returns an object (key=value pair)
+
+ usage: Location.args();
+ example: window.location.args()*/
+
+Location.prototype.args = function() {
+    var location_object = this.valueOf();
+    var arg_string = location_object.search.substr(1);
+    if(!arg_string) return;
+    var args = arg_string.split("&");
+    var arg_object = {}
+    
+    for (var a = 0; a < args.length; a++) {
+        var key = args[a].split("=")[0];
+        var value = args[a].split("=")[1];
+        value = decodeURIComponent(value);
+        arg_object[key] = value;
+    }
+    
+    return arg_object;
+}
+
+/*=============================================================
   Date 
 ===============================================================
  adding the strftime format to the Date Class
@@ -138,7 +163,7 @@ Date.prototype.strftime =  function(formatstring) {
 function Random() {
     this.randomint = function(min,max) { 
         if (max == undefined)  { max = 0}
-        return Math.floor(Math.random() * (max - min + 1)) + min; 
+            return Math.floor(Math.random() * (max - min + 1)) + min; 
         }
     this.sample = shuffle_sample
     this.shuffle = shuffle_sample
