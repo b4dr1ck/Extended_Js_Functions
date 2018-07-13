@@ -131,7 +131,7 @@ Date.prototype.strftime =  function(formatstring) {
         "m" : String(date.getMonth() + 1).replace(/^(\d{1})$/,"0$1"),
         "M" : String(date.getMinutes()).replace(/^(\d{1})$/,"0$1"),
         "p" : date.getHours() <= 12 ? "AM" : "PM",
-        "S" : date.getSeconds() + 1,
+        "S" : String(date.getSeconds() + 1).replace(/^(\d{1})$/,"0$1"),
         "w" : date.getDay(),
         "Y" : date.getFullYear(),
         "y" : String(date.getFullYear()).substr(2,2),
